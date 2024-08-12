@@ -5,9 +5,11 @@ import Projects from "./pages/Projects";
 import Signin from "./pages/Signin";
 import SignUp from "./pages/SignUp";
 import Dashboard from "./pages/Dashboard";
+import Header from "./components/Header";
 function App() {
   return (
-   
+   <>
+   <Header/>
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About/>} />
@@ -17,7 +19,7 @@ function App() {
         <Route path="/dashboard" element={<Dashboard/>} />
 
       </Routes>
-
+      </>
   );
 }
 

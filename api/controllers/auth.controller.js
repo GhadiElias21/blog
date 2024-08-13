@@ -1,7 +1,8 @@
-import User from '../models/user.model.js'
-import bcryptjs from 'bcryptjs'
-export const signup = async (req, res) => {
-  const { username, email, password } = req.body;
+import User from "../models/user.model.js";
+import bcryptjs from "bcryptjs";
+import { errorHandler } from "../utils/error.js";
+export const signup = async (req, res, next) => {
+  const { username, email, password, confirmPassword } = req.body;
 
   if (
     !username ||
@@ -11,23 +12,34 @@ export const signup = async (req, res) => {
     email === "" ||
     password === ""
   ) {
-    return res.status(400).json({ message: "Please fill in all fields" }); 
+    next(errorHandler(400, "All fields are required LIL BRO"));
   }
- 
- const hashedPassword = bcryptjs.hashSync(password, 10)
 
-  const newUser= new User({
+  if (password !== confirmPassword) {
+    next(errorHandler(400, "passwords dont match man WAKE UP"));
+  }
+
+  const user = await User.findOne({ username });
+  const Email = await User.findOne({ email });
+  if (user) {
+    next(errorHandler(400, "Username already exists ya 8abe"));
+  }
+
+  if (Email) {
+    next(errorHandler(400, "Email already exists ya 7mar"));
+  }
+
+  const hashedPassword = bcryptjs.hashSync(password, 10);
+
+  const newUser = new User({
     username, //username : username
     email,
-    password:hashedPassword,
-  })
-try {
-    await newUser.save()
-res.json('W signup')
-
-
-} catch (error) {
-    res.status(500).json({message:error.message})
-
-}
-}
+    password: hashedPassword,
+  });
+  try {
+    await newUser.save();
+    res.json("W signup");
+  } catch (error) {
+    next(error);
+  }
+};

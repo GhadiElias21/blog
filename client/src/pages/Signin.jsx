@@ -21,7 +21,8 @@ function SignIn() {
 
   const dispatch = useDispatch();
   const {loading,error:errorMessage}=useSelector(state=>state.user)
-
+  const [enteredEmaildIsTouched, setEnteredEmailIsTouched] =
+  useState(false);
   const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
     useState(false);
   const navigate = useNavigate();
@@ -29,7 +30,9 @@ function SignIn() {
   const passwordInputBlurHandler = (event) => {
     setEnteredpasswordIsTouched(true);
   };
-
+  const emailInputBlurHandler = (event) => {
+    setEnteredpasswordIsTouched(true);
+  };
   const strongRegex = new RegExp(
     "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
   );
@@ -42,7 +45,7 @@ function SignIn() {
     !enteredpasswordIsValid && enteredPasswordIsTouched;
 
   const enteredEmailIsValid =
-    formData.email.trim().length !== 0 && /\S+@\S+\.\S+/.test(formData.email);
+    formData.email.trim().length !== 0 && /\S+@\S+\.\S+/.test(formData.email) && enteredEmaildIsTouched;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -92,14 +95,14 @@ function SignIn() {
               <Label value=" email" />
 
               <TextInput
-                status={!enteredEmailIsValid ? "failure" : "success"}
-                color={!enteredEmailIsValid ? "failure" : "success"}
+                status={!enteredEmailIsValid ? "" : "success"}
+                color={!enteredEmailIsValid ? "" : "success"}
                 value={formData.email}
                 type="email"
                 placeholder="Email"
-                icon={() => (
-                  <HiMail color={!enteredEmailIsValid ? "red" : "black"} />
-                )}
+                icon={() => 
+                  <HiMail fill={formData.email.includes("@")&&formData.email.length>4?'orange':'black'}/>
+                }
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -114,14 +117,13 @@ function SignIn() {
               <TextInput
                 icon={() => (
                   <RiLockPasswordLine
-                    color={!enteredpasswordIsValid ? "red" : "black"}
+              
                   />
                 )}
                 type="password"
                 placeholder="Password"
                 onBlur={passwordInputBlurHandler}
-                status={!enteredpasswordIsValid ? "failure" : ""}
-                color={!enteredpasswordIsValid ? "failure" : ""}
+               
                 value={formData.password}
                 id="password"
                 onChange={(e) =>

@@ -3,7 +3,7 @@
 /* eslint-disable no-useless-escape */
 import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { useState } from "react";
-import { Link,useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { HiMail } from "react-icons/hi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaUserAstronaut } from "react-icons/fa";
@@ -16,11 +16,10 @@ function SignUp() {
     confirmPassword: "",
   });
 
-  const navigate=useNavigate()
+  const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [loading, setLoading] = useState(false);
-
 
   const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
     useState(false);
@@ -28,7 +27,6 @@ function SignUp() {
   const [enteredConfirmPasswordIsTouched, setEnteredConfirmpasswordlIsTouched] =
     useState(false);
 
-  
   const strongRegex = new RegExp(
     "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
   );
@@ -44,7 +42,6 @@ function SignUp() {
     formData.password.trim() === formData.confirmPassword.trim() &&
     formData.confirmPassword.trim().length !== 0;
 
-
   const passwordInputBlurHandler = (event) => {
     setEnteredpasswordIsTouched(true);
   };
@@ -53,16 +50,12 @@ function SignUp() {
     setEnteredConfirmpasswordlIsTouched(true);
   };
 
-
-
   const passwordInputIsInvalid =
     !enteredpasswordIsValid && enteredPasswordIsTouched;
 
   const confirmPasswordInputIsInvalid =
     !enteredConfirmpasswordIsValid && enteredConfirmPasswordIsTouched;
 
-
- 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (
@@ -87,8 +80,8 @@ function SignUp() {
         return setErrorMessage(data.message);
       }
       setLoading(false);
-      if(response.ok){
-        navigate('/sign-in')
+      if (response.ok) {
+        navigate("/sign-in");
       }
     } catch (error) {
       setErrorMessage(error.message);
@@ -110,7 +103,7 @@ function SignUp() {
         <div className="flex mx-auto ">
           <Link to="/" className=" text-4xl   font-bold dark:text-white">
             <span className=" items-center px-2 py-1 bg-gradient-to-r from-purple-500 via-red-500 to-orange-500 rounded-lg text-white">
-              BLOGGY 
+              BLOGGY
             </span>
           </Link>
         </div>
@@ -130,7 +123,9 @@ function SignUp() {
                     username: e.target.value,
                   })
                 }
-                icon={FaUserAstronaut}
+                icon={() => 
+                  <FaUserAstronaut fill={formData.username.length>0?'blue':'black'}/>
+                }
                 value={formData.username}
                 required
               />
@@ -138,10 +133,13 @@ function SignUp() {
             <div className="">
               <Label value=" email" />
               <TextInput
-              value={formData.email}
+                value={formData.email}
                 type="email"
                 placeholder="Email"
-                icon={HiMail}
+                icon={() => 
+                  <HiMail fill={formData.email.includes("@")&&formData.email.length>4?'orange':'black'}/>
+                }
+             
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -160,16 +158,15 @@ function SignUp() {
                   />
                 )}
                 value={formData.password}
-
                 type="password"
                 placeholder="Password"
                 helperText={
                   passwordInputIsInvalid && (
-                    <h1 className="font-medium ">
+                    <div className="font-medium ">
                       the password should contain at least 1 symbol, lowercase
                       and uppercase letter , a number and be bigger than 6
                       characters
-                    </h1>
+                    </div>
                   )
                 }
                 status={
@@ -221,7 +218,6 @@ function SignUp() {
                 type="password"
                 placeholder="Confirm Password"
                 value={formData.confirmPassword}
-
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -237,7 +233,7 @@ function SignUp() {
               disabled={loading}
             >
               {loading ? (
-                <div >
+                <div>
                   <Spinner size="sm" />
                   <span className="pl-3">Loading...</span>
                 </div>

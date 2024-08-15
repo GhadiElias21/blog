@@ -20,16 +20,27 @@ function SignIn() {
   const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
     useState(false);
     const navigate=useNavigate()
-  const enteredpasswordIsValid = formData.password.trim().length !== 0;
 
 
   const passwordInputBlurHandler = (event) => {
     setEnteredpasswordIsTouched(true);
   };
 
-  const passwordInputIsInvalid =
-    !enteredpasswordIsValid && enteredPasswordIsTouched;
+    const strongRegex = new RegExp(
+      "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
+    );
+  
+    const enteredpasswordIsValid =
+      formData.password.trim().length !== 0 &&
+      strongRegex.test(formData.password);
+  
+      const passwordInputIsInvalid =
+      !enteredpasswordIsValid && enteredPasswordIsTouched;
+  
 
+    const enteredEmailIsValid =
+      formData.email.trim().length !== 0 && /\S+@\S+\.\S+/.test(formData.email);
+  
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!formData.email || !formData.password) {
@@ -82,12 +93,12 @@ function SignIn() {
               
               <TextInput
                 status={
-                  errorMessage
+                 !enteredEmailIsValid
                     ? "failure"
                     : "success"
                 }
                 color={
-                  errorMessage
+                  !enteredEmailIsValid
                   ? "failure"
                   : "success"
                 }
@@ -96,7 +107,7 @@ function SignIn() {
                 
                 icon={() => (
                   <HiMail
-                    color={errorMessage ? "red" : "black"}
+                    color={  !enteredEmailIsValid ? "red" : "black"}
                   />
                 )}
                 onChange={(e) =>
@@ -113,31 +124,24 @@ function SignIn() {
               <TextInput
                 icon={() => (
                   <RiLockPasswordLine
-                    color={passwordInputIsInvalid || errorMessage ? "red" : "black"}
+                    color={!enteredpasswordIsValid ? "red" : "black"}
                   />
                 )}
                 type="password"
                 placeholder="Password"
-                helperText={
-                  passwordInputIsInvalid && (
-                    <h1 className="font-medium ">
-                      the password should contain at least 1 symbol, lowercase
-                      and uppercase letter , a number and be bigger than 6
-                      characters
-                    </h1>
-                  )
-                }
+                
+                onBlur={passwordInputBlurHandler}
                 status={
-                  errorMessage
+                  !enteredpasswordIsValid 
                     ? "failure"
-                    : "success"
+                    : ""
                 }
                 color={
-                  errorMessage
-                  ? "failure"
-                  : "success"
+                  !enteredpasswordIsValid 
+                    ? "failure"
+                    : ""
                 }
-                onBlur={passwordInputBlurHandler}
+             
                 value={formData.password}
                 id="password"
                 onChange={(e) =>

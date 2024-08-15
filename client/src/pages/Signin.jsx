@@ -12,6 +12,7 @@ import {
   signInStart,
   signInsuccess,
 } from "../redux/user/userSlice";
+import OAuth from "../components/OAuth";
 function SignIn() {
   const [formData, setFormData] = useState({
     email: "",
@@ -89,9 +90,9 @@ function SignIn() {
           </Link>
         </div>
 
-        <div className="flex-1">
-          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-            <div className="">
+        <div className="flex-1 w-[400px] mx-auto">
+          <form className="flex flex-col gap-4 " onSubmit={handleSubmit}>
+            <div className=" ">
               <Label value=" email" />
 
               <TextInput
@@ -150,6 +151,7 @@ function SignIn() {
                 "Sign In"
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span> Already have an account?</span>

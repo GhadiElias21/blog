@@ -7,6 +7,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { HiMail } from "react-icons/hi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaUserAstronaut } from "react-icons/fa";
+import OAuth from "../components/OAuth";
 
 function SignUp() {
   const [formData, setFormData] = useState({
@@ -108,7 +109,7 @@ function SignUp() {
           </Link>
         </div>
 
-        <div className="flex-1">
+        <div className="flex-1  w-[400px] mx-auto">
           <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div className="">
               <Label value=" username" />
@@ -241,6 +242,7 @@ function SignUp() {
                 "Sign Up"
               )}
             </Button>
+            <OAuth/>
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span> Have an account?</span>

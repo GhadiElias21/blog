@@ -44,7 +44,6 @@ function SignUp() {
     formData.password.trim() === formData.confirmPassword.trim() &&
     formData.confirmPassword.trim().length !== 0;
 
-  const enteredUsernameIsValid = formData.username.trim().length > 4;
 
   const passwordInputBlurHandler = (event) => {
     setEnteredpasswordIsTouched(true);
@@ -139,6 +138,7 @@ function SignUp() {
             <div className="">
               <Label value=" email" />
               <TextInput
+              value={formData.email}
                 type="email"
                 placeholder="Email"
                 icon={HiMail}
@@ -159,6 +159,8 @@ function SignUp() {
                     color={passwordInputIsInvalid ? "red" : "black"}
                   />
                 )}
+                value={formData.password}
+
                 type="password"
                 placeholder="Password"
                 helperText={
@@ -182,7 +184,6 @@ function SignUp() {
                     "success")
                 }
                 onBlur={passwordInputBlurHandler}
-                value={formData.password}
                 id="password"
                 onChange={(e) =>
                   setFormData({
@@ -219,6 +220,8 @@ function SignUp() {
                 onBlur={confirmPasswordInputBlurHandler}
                 type="password"
                 placeholder="Confirm Password"
+                value={formData.confirmPassword}
+
                 onChange={(e) =>
                   setFormData({
                     ...formData,

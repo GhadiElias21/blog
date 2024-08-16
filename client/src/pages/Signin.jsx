@@ -13,40 +13,21 @@ import {
   signInsuccess,
 } from "../redux/user/userSlice";
 import OAuth from "../components/OAuth";
+import toast from "react-hot-toast";
 function SignIn() {
   const [formData, setFormData] = useState({
-    email: "",
+    email: "gh8addi_elias@outlook.com",
     password: "",
   });
 
 
   const dispatch = useDispatch();
   const {loading,error:errorMessage}=useSelector(state=>state.user)
-  const [enteredEmaildIsTouched, setEnteredEmailIsTouched] =
   useState(false);
-  const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
-    useState(false);
+
   const navigate = useNavigate();
 
-  const passwordInputBlurHandler = (event) => {
-    setEnteredpasswordIsTouched(true);
-  };
-  const emailInputBlurHandler = (event) => {
-    setEnteredpasswordIsTouched(true);
-  };
-  const strongRegex = new RegExp(
-    "^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})"
-  );
 
-  const enteredpasswordIsValid =
-    formData.password.trim().length !== 0 &&
-    strongRegex.test(formData.password);
-
-  const passwordInputIsInvalid =
-    !enteredpasswordIsValid && enteredPasswordIsTouched;
-
-  const enteredEmailIsValid =
-    formData.email.trim().length !== 0 && /\S+@\S+\.\S+/.test(formData.email) && enteredEmaildIsTouched;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -61,10 +42,12 @@ function SignIn() {
 
       const data = await response.json();
       if (data.success === false) {
+        toast.error(data.message)
         dispatch(signInFailure(data.message));
       }
 
       if (response.ok)  {
+        toast.success('login successful')
         dispatch(signInsuccess(data))
         navigate("/");
       }
@@ -72,7 +55,7 @@ function SignIn() {
       dispatch(signInFailure(error.message));
 
     }
-    setEnteredpasswordIsTouched(false);
+ 
     setFormData({
       email: "",
       password: "",
@@ -96,13 +79,12 @@ function SignIn() {
               <Label value=" email" />
 
               <TextInput
-                status={!enteredEmailIsValid ? "" : "success"}
-                color={!enteredEmailIsValid ? "" : "success"}
+                
                 value={formData.email}
                 type="email"
                 placeholder="Email"
                 icon={() => 
-                  <HiMail fill={formData.email.includes("@")&&formData.email.length>4?'orange':'black'}/>
+                  <HiMail fill={formData.email.includes("@")&& formData.email.includes(".com")&&formData.email.length>4?'orange':'grey'}/>
                 }
                 onChange={(e) =>
                   setFormData({
@@ -118,13 +100,12 @@ function SignIn() {
               <TextInput
                 icon={() => (
                   <RiLockPasswordLine
-              
+              fill={formData.password.length>5?'cyan':"grey"}
                   />
                 )}
                 type="password"
                 placeholder="Password"
-                onBlur={passwordInputBlurHandler}
-               
+              
                 value={formData.password}
                 id="password"
                 onChange={(e) =>
@@ -160,11 +141,7 @@ function SignIn() {
             </Link>
           </div>
 
-          {errorMessage && (
-            <Alert className="mt-5" color="failure">
-              {errorMessage}
-            </Alert>
-          )}
+       
         </div>
       </div>
     </div>

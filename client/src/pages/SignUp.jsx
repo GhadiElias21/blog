@@ -8,19 +8,24 @@ import { HiMail } from "react-icons/hi";
 import { RiLockPasswordLine } from "react-icons/ri";
 import { FaUserAstronaut } from "react-icons/fa";
 import OAuth from "../components/OAuth";
-
+import { useSelector, useDispatch } from "react-redux";
+import {
+  signUpSuccess,
+  signUpFailure,
+  signUpStart,
+} from "../redux/user/userSlice";
+import toast from "react-hot-toast";
 function SignUp() {
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     password: "",
     confirmPassword: "",
   });
-
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState(null);
+  const {loading,error:errorMessage}=useSelector(state=>state.user)
 
-  const [loading, setLoading] = useState(false);
 
   const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
     useState(false);
@@ -36,8 +41,6 @@ function SignUp() {
     formData.password.trim().length !== 0 &&
     strongRegex.test(formData.password);
 
-  const enteredEmailIsValid =
-    formData.email.trim().length !== 0 && /\S+@\S+\.\S+/.test(formData.email);
 
   const enteredConfirmpasswordIsValid =
     formData.password.trim() === formData.confirmPassword.trim() &&
@@ -65,11 +68,10 @@ function SignUp() {
       !formData.password ||
       !formData.confirmPassword
     ) {
-      setErrorMessage("Please fill out all fields");
+     return dispatch(signUpFailure("Please fill out all fields"));
     }
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signUpStart());
       const response = await fetch("/api/auth/signup", {
         method: "POST",
         headers: { "Content-type": "application/json" },
@@ -78,15 +80,21 @@ function SignUp() {
 
       const data = await response.json();
       if (data.success === false) {
-        return setErrorMessage(data.message);
+        toast.error(data.message)
+        return dispatch(signUpFailure(data.message))
+        ;
       }
-      setLoading(false);
+     ;
       if (response.ok) {
+        dispatch(signUpSuccess(data));
+        toast.success('account successfully created')
+
         navigate("/sign-in");
       }
     } catch (error) {
-      setErrorMessage(error.message);
-      setLoading(false);
+      toast.error(error.message)
+      console.log(error.message)
+      return dispatch(signUpFailure(error.message));
     }
     setEnteredConfirmpasswordlIsTouched(false);
     setEnteredpasswordIsTouched(false);
@@ -124,9 +132,11 @@ function SignUp() {
                     username: e.target.value,
                   })
                 }
-                icon={() => 
-                  <FaUserAstronaut fill={formData.username.length>0?'blue':'black'}/>
-                }
+                icon={() => (
+                  <FaUserAstronaut
+                    fill={formData.username.length > 0 ? "limegreen" : "black"}
+                  />
+                )}
                 value={formData.username}
                 required
               />
@@ -137,10 +147,15 @@ function SignUp() {
                 value={formData.email}
                 type="email"
                 placeholder="Email"
-                icon={() => 
-                  <HiMail fill={formData.email.includes("@")&&formData.email.length>4?'orange':'black'}/>
-                }
-             
+                icon={() => (
+                  <HiMail
+                    fill={
+                      formData.email.includes("@") && formData.email.length > 4
+                        ? "orange"
+                        : "black"
+                    }
+                  />
+                )}
                 onChange={(e) =>
                   setFormData({
                     ...formData,
@@ -155,7 +170,7 @@ function SignUp() {
               <TextInput
                 icon={() => (
                   <RiLockPasswordLine
-                    color={passwordInputIsInvalid ? "red" : "black"}
+                    color={passwordInputIsInvalid ? "red" : ""}
                   />
                 )}
                 value={formData.password}
@@ -175,12 +190,7 @@ function SignUp() {
                     ? "failure"
                     : "success"
                 }
-                color={
-                  (passwordInputIsInvalid && "failure") ||
-                  (!passwordInputIsInvalid &&
-                    formData.password.trim().length !== 0 &&
-                    "success")
-                }
+               
                 onBlur={passwordInputBlurHandler}
                 id="password"
                 onChange={(e) =>
@@ -197,19 +207,15 @@ function SignUp() {
               <TextInput
                 icon={() => (
                   <RiLockPasswordLine
-                    color={confirmPasswordInputIsInvalid ? "red" : "black"}
+                    color={confirmPasswordInputIsInvalid ?  "red" : ""}
                   />
                 )}
-                color={
-                  (confirmPasswordInputIsInvalid && "failure") ||
-                  (!confirmPasswordInputIsInvalid &&
-                    formData.confirmPassword.trim().length !== 0 &&
-                    "success")
-                }
+           
                 helperText={
                   confirmPasswordInputIsInvalid &&
                   formData.confirmPassword.length > 0 && (
                     <>
+                    
                       <span className="font-medium">Oops!</span> passwords are
                       not matching
                     </>
@@ -242,7 +248,7 @@ function SignUp() {
                 "Sign Up"
               )}
             </Button>
-            <OAuth/>
+            <OAuth />
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span> Have an account?</span>
@@ -251,11 +257,7 @@ function SignUp() {
             </Link>
           </div>
 
-          {errorMessage && (
-            <Alert className="mt-5" color="failure">
-              {errorMessage}
-            </Alert>
-          )}
+          
         </div>
       </div>
     </div>

@@ -134,7 +134,7 @@ function SignUp() {
                 }
                 icon={() => (
                   <FaUserAstronaut
-                    fill={formData.username.length > 0 ? "limegreen" : "black"}
+                    color={formData.username.length > 0 ? "limegreen" : ""}
                   />
                 )}
                 value={formData.username}
@@ -149,10 +149,10 @@ function SignUp() {
                 placeholder="Email"
                 icon={() => (
                   <HiMail
-                    fill={
+                    color={
                       formData.email.includes("@") && formData.email.length > 4
                         ? "orange"
-                        : "black"
+                        : ""
                     }
                   />
                 )}
@@ -178,7 +178,7 @@ function SignUp() {
                 placeholder="Password"
                 helperText={
                   passwordInputIsInvalid && (
-                    <div className="font-medium ">
+                    <div className="font-medium text-red-500">
                       the password should contain at least 1 symbol, lowercase
                       and uppercase letter , a number and be bigger than 6
                       characters

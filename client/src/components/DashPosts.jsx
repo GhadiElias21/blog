@@ -20,6 +20,7 @@ function DashPosts() {
           `/api/post/getposts?userId=${currentUser._id}`
         );
         const data = await response.json();
+        console.log(data.posts)
         if (response.ok) {
           setUserPosts(data.posts);
           if (data.posts.length < 9) {
@@ -64,8 +65,10 @@ try {
    toast.error(data.message)
   }
   else {
+    toast.success('post has been deleted')
     setUserPosts((prev)=>
       prev.filter((post)=>post._id !== postIdToDelete )
+
     )
   }
 } catch (error) {
@@ -140,14 +143,14 @@ try {
           {showMore && (
             <button
               onClick={handleShowMore}
-              className="w-full text-teal-500 self-center text0sm py-7"
+              className="w-full text-teal-500 self-center text-sm py-7"
             >
               show more
             </button>
           )}
         </>
       ) : (
-        <p> No posts found</p>
+        <p> </p>
       )}
        <Modal
         className="

@@ -10,6 +10,9 @@ import Header from "./components/Header";
 import FooterComp from "./components/FooterComp";
 import { Toaster } from "react-hot-toast";
 import PrivateRoute from "./components/PrivateRoute";
+import OnlyAdminRoute from "./components/OnlyAdminRoute";
+import CreatePost from "./pages/CreatePost";
+import UpdatePost from "./pages/UpdatePost";
 function App() {
   return (
     <>
@@ -23,6 +26,11 @@ function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/dashboard" element={<Dashboard />} />
         </Route>
+        <Route element={<OnlyAdminRoute />}>
+          <Route path="/create-post" element={<CreatePost />} />
+        
+          <Route path="/update-post/:postId" element={<UpdatePost />} />
+          </Route>
       </Routes>
 
       <Toaster />

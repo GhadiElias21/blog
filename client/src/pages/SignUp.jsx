@@ -89,11 +89,10 @@ function SignUp() {
         dispatch(signUpSuccess(data));
         toast.success('account successfully created')
 
-        navigate("/sign-in");
+      
       }
     } catch (error) {
       toast.error(error.message)
-      console.log(error.message)
       return dispatch(signUpFailure(error.message));
     }
     setEnteredConfirmpasswordlIsTouched(false);

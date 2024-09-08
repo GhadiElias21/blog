@@ -1,10 +1,8 @@
 import e from "express";
-import { deleteUser, signout, test, updateUser } from "../controllers/user.controller.js";
+import { deleteUser, signout, updateUser } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = e.Router();
-
-router.get("/test",test)
 
 router.put('/update/:userId',verifyToken, updateUser)
 

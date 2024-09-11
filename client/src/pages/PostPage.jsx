@@ -2,6 +2,7 @@ import { Button, Spinner } from "flowbite-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
+import CallToAction from "../components/CallToAction";
 const PostPage = () => {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
@@ -59,8 +60,11 @@ const PostPage = () => {
 
 
 
-
  </div>
+ <div className="mx-4-xl mx-auto w-full">
+  <CallToAction/>
+</div>
+
     </main>
   );
 };

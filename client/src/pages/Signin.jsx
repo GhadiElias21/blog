@@ -16,8 +16,8 @@ import OAuth from "../components/OAuth";
 import toast from "react-hot-toast";
 function SignIn() {
   const [formData, setFormData] = useState({
-    email: "gh8addi_elias@outlook.com",
-    password: "",
+    email: "Adm1n@outlook.com",
+    password: "Adm1n@outlook.com",
   });
 
 

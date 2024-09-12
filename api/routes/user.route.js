@@ -1,5 +1,5 @@
 import e from "express";
-import { deleteUser, signout, updateUser,getUsers } from "../controllers/user.controller.js";
+import { deleteUser, signout, updateUser,getUsers, getUser } from "../controllers/user.controller.js";
 import { verifyToken } from "../utils/verifyUser.js";
 
 const router = e.Router();
@@ -12,5 +12,6 @@ router.post('/signout',signout)
 
 router.get('/getusers',verifyToken,getUsers)
 
+router.get('/:userId',getUser)
 
 export default router

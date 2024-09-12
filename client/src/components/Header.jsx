@@ -1,6 +1,5 @@
-/* eslint-disable react/no-unescaped-entities */
 import { Avatar, Button, Dropdown, Navbar, TextInput } from "flowbite-react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation} from "react-router-dom";
 import { AiOutlineSearch } from "react-icons/ai";
 import { FaMoon, FaSun } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
@@ -12,23 +11,28 @@ const Header = () => {
   const { currentUser } = useSelector((state) => state.user);
   const {theme}=useSelector((state)=>state.theme)
   const dispatch = useDispatch();
-  const navigate=useNavigate()
   const handleSignOut=async ()=>{
     try {
-      const res=await fetch ("api/user/signout",{
+      const res=await fetch ("/api/user/signout",{
         method:"POST",
       })
       const data=await res.json()
 
       if(!res.ok){
         toast.error(data.message)
-      }else{
+      }
+      if (res.status === 404) {
+        toast.error("Endpoint not found");
+        return;
+      }
+     if(res.ok){
         dispatch(signoutSuccess())
         toast.success("User signed out")
-        navigate('/sign-in')
+       
       }
     } catch(error) {
-     toast.error(error)
+     toast.error(error.message ||'an error has occured')
+     console.log(error.message)
     }
   }
   return (

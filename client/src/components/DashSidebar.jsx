@@ -1,11 +1,13 @@
 import { Sidebar } from "flowbite-react";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
-import { HiUser, HiArrowSmRight, HiDocumentText } from "react-icons/hi";
+import { HiUser,HiChartPie, HiArrowSmRight, HiDocumentText,HiAnnotation } from "react-icons/hi";
 import { useDispatch } from "react-redux";
 import { Link, useLocation } from "react-router-dom";
 import { signoutSuccess } from "../redux/user/userSlice";
 import { useSelector } from "react-redux";
+import { FaUsers } from "react-icons/fa";
+
 const DashSidebar = () => {
   const { currentUser } = useSelector((state) => state.user);
   const location = useLocation();
@@ -39,6 +41,17 @@ const DashSidebar = () => {
     <Sidebar className="w-full md:w-56">
       <Sidebar.Items >
         <Sidebar.ItemGroup className="flex flex-col">
+        {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=dash">
+              <Sidebar.Item
+                as="div"
+                active={tab==='dash'||!tab }
+                icon={HiChartPie}
+              >
+                Dashboard
+              </Sidebar.Item>
+            </Link>
+          )}
           <Link to="/dashboard?tab=profile">
             <Sidebar.Item
               href="#"
@@ -67,13 +80,23 @@ const DashSidebar = () => {
               <Sidebar.Item
                 active={tab === "users"}
                 as="div"
-                icon={HiDocumentText}
+                icon={FaUsers }
               >
                 users
               </Sidebar.Item>
             </Link>
           )}
-
+  {currentUser.isAdmin && (
+            <Link to="/dashboard?tab=comments">
+              <Sidebar.Item
+                active={tab === "comments"}
+                as="div"
+                icon={HiAnnotation }
+              >
+               comments
+              </Sidebar.Item>
+            </Link>
+          )}
           <Sidebar.Item
             href="#"
             onClick={handleSignOut}

@@ -13,11 +13,11 @@ export const signup = async (req, res, next) => {
     email === "" ||
     password === ""
   ) {
-    next(errorHandler(400, "All fields are required LIL BRO"));
+    next(errorHandler(400, "All fields are required "));
   }
 
   if (password !== confirmPassword) {
-    next(errorHandler(400, "passwords dont match man WAKE UP"));
+    next(errorHandler(400, "passwords dont match"));
   }
 
   const user = await User.findOne({ username });
@@ -33,7 +33,7 @@ export const signup = async (req, res, next) => {
   const hashedPassword = bcryptjs.hashSync(password, 10);
 
   const newUser = new User({
-    username, //username : username
+    username, 
     email,
     password: hashedPassword,
   });

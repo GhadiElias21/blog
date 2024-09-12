@@ -24,7 +24,7 @@ function SignUp() {
     confirmPassword: "",
   });
   const navigate = useNavigate();
-  const {loading,error:errorMessage}=useSelector(state=>state.user)
+  const {loading,error}=useSelector(state=>state.user)
 
 
   const [enteredPasswordIsTouched, setEnteredpasswordIsTouched] =
@@ -247,7 +247,7 @@ function SignUp() {
                 "Sign Up"
               )}
             </Button>
-            <OAuth />
+           
           </form>
           <div className="flex gap-2 text-sm mt-5">
             <span> Have an account?</span>

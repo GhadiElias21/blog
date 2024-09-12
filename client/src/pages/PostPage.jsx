@@ -3,19 +3,24 @@ import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useParams } from "react-router-dom";
 import CallToAction from "../components/CallToAction";
+import CommentSection from "../components/CommentSection";
+import PostCard from "../components/PostCard";
 const PostPage = () => {
   const { postSlug } = useParams();
   const [loading, setLoading] = useState(true);
-  const [post, setPost] = useState(null);
-
+  const [post, setPost] = useState([]);
+  const [error, setError] = useState(null);
+  const [recentPosts, setRecentPosts] = useState(null);
   useEffect(() => {
     const fetchPost = async () => {
       try {
+        console.log("Fetching post...");
         setLoading(true);
         const res = await fetch(`/api/post/getposts?slug=${postSlug}`);
         const data = await res.json();
+        console.log("Data parsed:", data);
         if (!res.ok) {
-          toast.error("error has occured");
+          toast.error("Error has occurred");
           setLoading(false);
           return;
         }
@@ -23,48 +28,107 @@ const PostPage = () => {
           setPost(data.posts[0]);
           setLoading(false);
         }
+        console.log("Post state changed:", post);
       } catch (error) {
-        toast.error(error);
+        console.error("Fetch error:", error);
+        setError("An error occurred while fetching the post.");
         setLoading(false);
       }
     };
     fetchPost();
   }, [postSlug]);
+  useEffect(() => {
+    return () => {
+      console.log("Component unmounted");
+    };
+  }, []);
+  
+  useEffect(()=>{
+try {
+  const fetchRecentPosts=async()=>{
+    const res=await fetch(`/api/post/getposts?limit=4`)
+    const data=await res.json()
+    if(res.ok){
+      setRecentPosts(data.posts)
+    }
+  }
+  fetchRecentPosts()
 
+} catch (error) {
+  toast.error(error.message)
+}
+  },[])
+  
+  
+  
+  
+  
+  
+  
   if (loading)
     return (
       <div className="flex justify-center items-center min-h-screen">
         <Spinner size="xl" />
       </div>
     );
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
+
+
+
+
 
   return (
     <main className="p-3 flex flex-col max-w-6xl mx-auto min-h-screen">
-      <h1 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
-        {" "}
-        {post && post.title}
-      </h1>
-      <Link to={`/search?category=${post && post.category}`} className="self-center mt-5"> 
-        <Button color="gray" pill size={"xs"}>
-          {post && post.category}
-        </Button>
-      </Link>
-      <img src={post&& post.image} className="mt-10 p-3 max-h-[600px] w-full  "/>
- 
- <div className=" flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs ">
-  <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
-  <span className="italic">{post && (post.content.length /1500).toFixed(0)}mins read</span>
+      {post ? (
+        <>
+          <h1 className="text-3xl mt-10 p-3 text-center font-serif max-w-2xl mx-auto lg:text-4xl">
+            {post && post.title}{" "}
+          </h1>
+          <Link
+            to={`/search?category=${post?.category}`}
+            className="self-center mt-5"
+          >
+            <Button color="gray" pill size={"xs"}>
+              {post && post.category}
+            </Button>
+          </Link>
+          <img
+            src={post && post.image}
+            className="mt-10 p-3 max-h-[700px] object-cover w-full"
+            alt={post && post.title}
+          />
+          <div className="flex justify-between p-3 border-b border-slate-500 mx-auto w-full max-w-2xl text-xs">
+            <span>{post && new Date(post.createdAt).toLocaleDateString()}</span>
+            <span className="italic">
+              {post && (post.content.length / 1000).toFixed(0)} mins read
+            </span>
+          </div>
+          <div
+            className="p-3 max-w-2xl mx-auto w-full post-content"
+            dangerouslySetInnerHTML={{ __html: post && post.content }}
+          ></div>
+          <div className="mx-4-xl mx-auto w-full">
+            <CallToAction />
+          </div>
+          <CommentSection postId={post?._id} />
+        </>
+      ) : (
+        "error"
+      )}
 
- </div>
- <div className='p-3 max-w-2xl mx-auto w-full post-content' dangerouslySetInnerHTML={{__html:post && post.content}}>
-
-
-
- </div>
- <div className="mx-4-xl mx-auto w-full">
-  <CallToAction/>
-</div>
-
+      <div className="flex flex-col justify-center items-center mb-5">
+        <h1 className="text-xl mt-5 ">Recent articles</h1>
+        <div className="flex flex-wrap gap-5 mt-5  justify-center">
+          {
+            recentPosts&& 
+            recentPosts.map((post)=>(
+              <PostCard key={post._id} post={post}/>
+            ))
+          }
+        </div>
+      </div>
     </main>
   );
 };
